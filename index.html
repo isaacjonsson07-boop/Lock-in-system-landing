@@ -465,6 +465,70 @@
     .btn-pricing.secondary:hover { border-color:rgba(240,234,220,0.22); color:var(--cream); }
     .pricing-note { margin-top:20px; font-size:0.72rem; color:var(--cream-faint); position:relative; z-index:1; }
 
+    /* ========== EMAIL CAPTURE ========== */
+    .email-capture {
+      text-align: center;
+      padding: 80px 0;
+    }
+    .email-capture .sec-body { margin: 0 auto 32px; text-align: center; }
+    .email-form {
+      display: flex;
+      gap: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .email-form input[type="email"] {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .email-form input[type="email"]::placeholder { color: var(--cream-faint); }
+    .email-form input[type="email"]:focus { border-color: rgba(212,181,120,0.4); }
+    .email-form button {
+      padding: 14px 28px;
+      background: rgba(212,181,120,0.15);
+      border: 1px solid rgba(212,181,120,0.3);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .email-form button:hover {
+      background: rgba(212,181,120,0.25);
+      border-color: rgba(212,181,120,0.45);
+    }
+    .email-note {
+      margin-top: 14px;
+      font-size: 0.68rem;
+      color: var(--cream-faint);
+    }
+    .email-success {
+      padding: 20px;
+      background: rgba(126,216,154,0.06);
+      border: 1px solid rgba(126,216,154,0.2);
+      border-radius: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .email-success p { color: var(--green); font-size: 0.9rem; }
+    .dn { display: none; }
+    @media (max-width:768px) {
+      .email-form { flex-direction: column; }
+      .email-form button { width: 100%; }
+    }
+
     /* ========== FINAL CTA ========== */
     .final-cta {
       text-align:center; padding:140px 32px;
@@ -736,6 +800,31 @@
     </div>
   </section>
 
+  <!-- ========== EMAIL CAPTURE ========== -->
+  <section class="email-capture">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">Not ready to commit?</p>
+      <h2 class="sec-heading serif">Get the framework first.</h2>
+      <p class="sec-body">
+        We'll send you the core principles behind the 21-day installation — free.
+        No spam. Just the system.
+      </p>
+      <div id="email-form-wrap">
+        <form name="sa-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
+          <p class="dn"><label>Don't fill this out: <input name="bot-field" /></label></p>
+          <div class="email-form">
+            <input type="email" name="email" placeholder="Your email" required />
+            <button type="submit">Send it</button>
+          </div>
+        </form>
+        <p class="email-note">No spam. Unsubscribe anytime.</p>
+      </div>
+      <div id="email-success" class="email-success" style="display:none;">
+        <p>Check your inbox. The framework is on its way.</p>
+      </div>
+    </div>
+  </section>
+
   <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
 
   <!-- ========== PRICING ========== -->
@@ -809,6 +898,26 @@
       entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);} });
     },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
     document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
+
+    // Email form — submit without redirect
+    const form = document.getElementById('lead-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        try {
+          await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(data).toString()
+          });
+          document.getElementById('email-form-wrap').style.display = 'none';
+          document.getElementById('email-success').style.display = 'block';
+        } catch (err) {
+          form.submit();
+        }
+      });
+    }
   </script>
 </body>
 </html>
