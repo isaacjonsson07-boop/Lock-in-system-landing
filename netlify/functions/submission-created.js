@@ -23,11 +23,11 @@ exports.handler = async function (event) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The framework behind the 21-day installation</title>
 </head>
-<body style="margin:0;padding:0;background-color:#0F0F0F;width:100%;-webkit-font-smoothing:antialiased;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#0F0F0F;">
+<body style="margin:0;padding:0;background-color:#ffffff;width:100%;-webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
     <tr>
-      <td align="center" style="padding:0;">
-        <table role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;width:100%;background-color:#0F0F0F;">
+      <td align="center" style="padding:24px 16px;">
+        <table role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;width:100%;background-color:#0F0F0F;border-radius:12px;">
           <tr>
             <td style="padding:48px 24px;font-family:Georgia,'Times New Roman',serif;line-height:1.7;">
 
