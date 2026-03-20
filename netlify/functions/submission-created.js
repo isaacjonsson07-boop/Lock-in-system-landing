@@ -1,176 +1,913 @@
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || "onboarding@resend.dev";
-
-exports.handler = async function (event) {
-  try {
-    const payload = JSON.parse(event.body).payload;
-    const email = payload.data.email;
-
-    if (!email) {
-      console.log("No email found in submission");
-      return { statusCode: 200, body: "No email" };
-    }
-
-    if (!RESEND_API_KEY) {
-      console.error("RESEND_API_KEY not set");
-      return { statusCode: 500, body: "Missing API key" };
-    }
-
-    const htmlContent = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The framework behind the 21-day installation</title>
-</head>
-<body style="margin:0;padding:0;background-color:#ffffff;width:100%;-webkit-font-smoothing:antialiased;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff;">
-    <tr>
-      <td align="center" style="padding:24px 16px;">
-        <table role="presentation" width="580" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;width:100%;background-color:#1E1F23;border-radius:12px;border:1px solid #C9A96E;">
-          <tr>
-            <td style="padding:48px 24px;font-family:Georgia,'Times New Roman',serif;line-height:1.7;">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Structured Achievement — Install Your Personal Operating System</title>
+  <meta name="description" content="A 21-day system that installs discipline, structure, and execution into your daily life. Not motivation. Infrastructure.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAEBUlEQVR4nO2Wz28TRxTH38zsj+zaaztI3kAtJY4Ll6IoImnJzSLBlSoiRRGhQiX0lPbWFFVc6R/QiCP5I4qKE3JoQKZOUKmQaN1LOZSkCZUsIXHwj/299uzM9mCIKndtkgMHpD7tZbQ777Pvve+8N0jTkvA2Db9V7/8DDmNCrxcIoSM5CsPwCIAwDIMgYIwdbCOEcM47S4QQxvhgiTHGGBNCIv+pG4AxtiyrUCjcvLkSj8dFUQxDAAhN04rHYxgTAAhDblm2pmkdkue5juMsLn6+u7urKArnvB8AIcR5MDiYGhsbKxaLtm0jhAnB8/PzpdIDw2gCoFhMnZ2dvXt3gzFmGMbZsx9NTk5KkhSdJU1L/vtJpY4BoEuXPmWMnTjx3kFglUpleDjbWaRSxyqV35PJQQDIZnN7e3uU0vHxM6IoJ5ODXQ6ja9CJPZ3WLcuWZVkURVEU0+l0vV4nhOi6rqoqxnhy8sNHj362LItxTgiJdNVPps1m07bNWq1Wr9eCIGg06rZtGkbDNE3LMsfHx7e3t7a2tpeWvpBEkXMemaFeKgIAyOfzL16clCRJEARN0/L5/OhoThTFWCyWTqdLpftPnvw6NzdXKHyMEDqyTAHg2rVlSilCGGOk6/ry8leMMdf1jh8fymaz5fLWwsJCEAQDA3KfNEQDMEYAcPnyZ/v7fwmCLMvSw4dbV65c3dn5c3g4Wy4/MAxjcfGq77cwJoyxPoB+NVAUZWBAjcdjqqqKouj7fi73fqXyGyHC8+d/C4IoyzK86cz3A/i+7/ue67btdttxnFOnTpbLP+3u7kxPz3DOKW07jsN50G63O99HgvoVeXQ0SwiW5QGEkKqqa2tFz/OWl7/W9bSmablcTtfTjuNmMpleFe4D4ACwsvId56Hv+4lE4vTpDwzDqFarq6u3VFUZGhpaXb3FOeecJRJJxhjG0cnoddAwACwtffn06R8jIyObmz8GQXD+fGFvbx8hpOv6nTs/XLy40Gw2Pc+7cOGTYrHY1YLeAOhYvV5LJlP37m1KkvTs2Y5pWq1WCwAopQAhpZRS2mr57TZ9HXeEk+i4MMaU0kwm8/jxL4IgzMwUbNuKxWKEEFEUBUEAQMIrEzsttpdFR8A5C4Lg9u3vX758ee7ctGWZgiDUajXXtQGg2ZQppY1GwzSbAGDbVmdyHF5FISFEUZRMJmNZ1vr6WiKRmJiY2NhY9zwPAGRZnpg4Uyrdp5RyznVd70QWqSXUdS/CGDuOMzU1df36N61WW9M0SZIYY57nKYrSkQrn3HVdVVU7RywIAsdxbtz4tlqt/ncqdAMAACFEKfU8BwAB9BR416ZYLB6p1AgAvJ4Hh3P9ynp1pJ7dtH8LO7y9+xevdx/wD6/V6QUkUtSvAAAAAElFTkSuQmCC">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center" style="padding-bottom:48px;font-family:Arial,Helvetica,sans-serif;font-size:14px;letter-spacing:3px;color:#C9A96E;">
-                    STRUCTURED ACHIEVEMENT
-                  </td>
-                </tr>
-              </table>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:400;line-height:1.3;color:#F5F0EB;padding-bottom:32px;">
-                    The framework behind the 21-day installation.
-                  </td>
-                </tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">You signed up because something isn't working.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Not your ambition. Not your intelligence. Not your effort. The system. Or more accurately, the absence of one.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Here's the framework that Structured Achievement is built on. Three principles. No fluff.</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td align="center" style="padding:40px 0;font-size:12px;letter-spacing:5px;color:#C9A96E;">&#9670;</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#C9A96E;padding-bottom:8px;">Principle 1</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#F5F0EB;padding-bottom:16px;">Direction before discipline.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Most people start with habits. Wake up at 5am. Meditate. Journal. Cold shower.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">None of it matters if you don't know what you're building toward.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Direction is the first component we install. Not goals, not vision boards. A single operating direction that gives every daily action coherence. When you know where you're pointed, discipline becomes obvious. Without it, discipline is just suffering with no purpose.</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td align="center" style="padding:40px 0;font-size:12px;letter-spacing:5px;color:#C9A96E;">&#9670;</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#C9A96E;padding-bottom:8px;">Principle 2</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#F5F0EB;padding-bottom:16px;">Systems over motivation.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Motivation is a spike. It comes, it fades, and you're back where you started.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">A system is infrastructure. It runs whether you feel like it or not. The difference between someone who executes consistently and someone who starts over every Monday isn't willpower. It's that one of them built a system and the other keeps relying on energy they can't control.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">Structured Achievement installs that system in 21 days. One component per day. Direction, structure, habits, priorities, tracking, reviews. Each one builds on the last. By the end, the system runs. You maintain it.</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td align="center" style="padding:40px 0;font-size:12px;letter-spacing:5px;color:#C9A96E;">&#9670;</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#C9A96E;padding-bottom:8px;">Principle 3</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#F5F0EB;padding-bottom:16px;">Identity drives execution.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">You can build every habit in the book. But if you still see yourself as someone who quits, the habits collapse the first time life gets hard.</td></tr>
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:20px;">The final phase of the installation connects your system to your identity. You stop being someone who is trying to be disciplined and become someone who is disciplined. Not through affirmations. Through evidence. Every day the system runs, the evidence builds. And at some point, the identity isn't aspirational anymore. It's just accurate.</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td align="center" style="padding:40px 0;font-size:12px;letter-spacing:5px;color:#C9A96E;">&#9670;</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:#D4CFC8;padding-bottom:32px;">That's the framework. Direction. Systems. Identity. Three phases, 21 days, one installation.</td></tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="background-color:#161718;border:1px solid #2A2A2A;border-radius:8px;padding:24px;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;font-weight:bold;color:#C9A96E;padding-bottom:12px;">The daily rhythm after installation:</td></tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#D4CFC8;padding-bottom:8px;">60 seconds in the morning. See what today requires.</td></tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#D4CFC8;padding-bottom:8px;">Execute throughout the day. Check things off.</td></tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#D4CFC8;padding-bottom:8px;">60 seconds in the evening. Plan tomorrow.</td></tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#D4CFC8;padding-bottom:8px;">10 minutes on Sunday. Weekly review.</td></tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#D4CFC8;">Under two minutes a day to run your entire system.</td></tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding-top:48px;border-top:1px solid #2A2A2A;" align="center">
-                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#A0998F;text-align:center;padding-bottom:16px;">The first 50 members get locked in at $9/month for life.<br/>After that, it's $19.</td></tr>
-                      <tr>
-                        <td align="center" style="padding-bottom:24px;">
-                          <a href="https://structured-achievement.netlify.app/#pricing" style="display:inline-block;padding:14px 32px;background-color:#161718;border:1px solid rgba(201,169,110,0.4);border-radius:8px;color:#C9A96E;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:14px;letter-spacing:1px;">See the full system</a>
-                        </td>
-                      </tr>
-                      <tr><td style="font-family:Georgia,'Times New Roman',serif;font-size:13px;color:#A0998F;text-align:center;">You already know the pattern you're stuck in.<br/>This is the infrastructure that breaks it.</td></tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center" style="padding-top:48px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#6B6560;">
-                    Structured Achievement<br/>
-                    You received this because you signed up at <a href="https://structured-achievement.netlify.app" style="color:#6B6560;">structured-achievement.netlify.app</a><br/>
-                    <a href="mailto:isaac@structuredachievement.com" style="color:#6B6560;">Unsubscribe</a>
-                  </td>
-                </tr>
-              </table>
-
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
-
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: email,
-        subject: "The framework behind the 21-day installation",
-        html: htmlContent,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      console.error("Resend error:", result);
-      return { statusCode: response.status, body: JSON.stringify(result) };
+    :root {
+      --bg: #0F0F12;
+      --bg-warm: #141418;
+      --bg-card: #1A1A1F;
+      --bg-elevated: #202026;
+      --bg-contrast: #1E1D22;
+      --cream: #F0EADC;
+      --cream-muted: #C8C0B2;
+      --cream-faint: #8A8278;
+      --gold: #D4B578;
+      --gold-bright: #E0C78E;
+      --gold-dim: #B09460;
+      --blue: #7FC2F8;
+      --green: #7ED89A;
+      --rose: #E08888;
+      --border: rgba(240, 234, 220, 0.08);
+      --border-light: rgba(240, 234, 220, 0.14);
     }
 
-    console.log(`Email sent to ${email}:`, result.id);
-    return { statusCode: 200, body: "Email sent" };
-  } catch (error) {
-    console.error("Function error:", error);
-    return { statusCode: 500, body: error.toString() };
-  }
-};
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--cream);
+      line-height: 1.7;
+      font-weight: 300;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .serif { font-family: 'Cormorant Garamond', serif; }
+
+    /* ========== ANIMATIONS ========== */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(32px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes heroGlow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .anim { opacity:0; transform:translateY(32px); transition: opacity 0.9s cubic-bezier(.25,.46,.45,.94), transform 0.9s cubic-bezier(.25,.46,.45,.94); }
+    .anim.vis { opacity:1; transform:translateY(0); }
+    .anim-d1 { transition-delay: 0.1s; }
+    .anim-d2 { transition-delay: 0.2s; }
+    .anim-d3 { transition-delay: 0.3s; }
+    .anim-d4 { transition-delay: 0.4s; }
+
+    /* ========== NAV ========== */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:100;
+      padding: 20px 0;
+      transition: all 0.4s ease;
+    }
+    nav.scrolled {
+      background: rgba(15,15,18,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    nav .wrap { max-width:1120px; margin:0 auto; padding:0 32px; display:flex; justify-content:space-between; align-items:center; }
+    .nav-brand { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:500; color:var(--cream); letter-spacing:0.02em; text-decoration:none; }
+    .nav-cta {
+      padding: 10px 28px;
+      background: rgba(212,181,120,0.12);
+      border: 1px solid rgba(212,181,120,0.28);
+      color: var(--gold);
+      font-size: 0.8rem; font-weight:400; letter-spacing:0.05em;
+      border-radius: 6px; cursor:pointer;
+      transition: all 0.3s ease; text-decoration:none;
+    }
+    .nav-cta:hover { background: rgba(212,181,120,0.22); border-color: rgba(212,181,120,0.4); }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 100px 32px 80px;
+      overflow: hidden;
+    }
+    /* Atmospheric gold light */
+    .hero-glow {
+      position: absolute;
+      top: -20%; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(ellipse, rgba(212,181,120,0.1) 0%, rgba(212,181,120,0.03) 40%, transparent 70%);
+      pointer-events: none;
+      animation: heroGlow 6s ease-in-out infinite;
+    }
+    .hero-glow-secondary {
+      position: absolute;
+      bottom: -10%; left: 50%; transform: translateX(-50%);
+      width: 1200px; height: 400px;
+      background: radial-gradient(ellipse, rgba(15,15,18,1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    /* Grain overlay for texture */
+    .hero::after {
+      content:'';
+      position:absolute; inset:0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .hero-content { position:relative; z-index:2; max-width:820px; }
+    .hero-label {
+      font-size: 0.65rem; text-transform: uppercase;
+      letter-spacing: 0.25em; color: var(--gold);
+      margin-bottom: 36px; font-weight: 400;
+      animation: fadeIn 1s ease 0.3s both;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 5.2rem);
+      font-weight: 300; line-height: 1.08;
+      margin-bottom: 32px;
+      animation: fadeUp 1s ease 0.5s both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-bright);
+      /* Subtle text shimmer */
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+    }
+    .hero-sub {
+      font-size: 1.08rem; color: var(--cream-muted);
+      max-width: 520px; margin: 0 auto 52px;
+      line-height: 1.85; font-weight: 300;
+      animation: fadeUp 1s ease 0.7s both;
+    }
+    .hero-cta-wrap { animation: fadeUp 1s ease 0.9s both; }
+    .btn-primary {
+      display: inline-block; padding: 18px 56px;
+      background: linear-gradient(135deg, rgba(212,181,120,0.22), rgba(212,181,120,0.1));
+      border: 1px solid rgba(212,181,120,0.4);
+      color: var(--gold-bright);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.94rem; font-weight: 400;
+      letter-spacing: 0.07em; border-radius: 8px;
+      cursor: pointer; transition: all 0.4s ease;
+      text-decoration: none;
+      box-shadow: 0 4px 32px rgba(212,181,120,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(212,181,120,0.32), rgba(212,181,120,0.18));
+      border-color: rgba(212,181,120,0.55);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 48px rgba(212,181,120,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .hero-price { font-size:0.78rem; color:var(--cream-faint); margin-top:18px; }
+    .hero-price span { color:var(--cream-muted); font-weight:400; }
+
+    /* ========== SHARED ========== */
+    section { padding: 120px 0; }
+    .wrap { max-width:1120px; margin:0 auto; padding:0 32px; }
+    .wrap-narrow { max-width:720px; margin:0 auto; padding:0 32px; }
+
+    .sec-label {
+      font-size:0.6rem; text-transform:uppercase;
+      letter-spacing:0.24em; color:var(--cream-faint);
+      margin-bottom:20px;
+    }
+    .sec-heading {
+      font-family:'Cormorant Garamond',serif;
+      font-size: clamp(2.1rem, 4.2vw, 3rem);
+      font-weight:300; line-height:1.18;
+      margin-bottom:24px;
+    }
+    .sec-body { font-size:0.95rem; color:var(--cream-muted); max-width:580px; line-height:1.85; }
+
+    /* ========== DIVIDER ========== */
+    .divider { display:flex; align-items:center; justify-content:center; gap:18px; padding:0 32px; }
+    .div-line { height:1px; width:70px; background:linear-gradient(90deg,transparent,rgba(138,130,120,0.5),transparent); }
+    .div-diamond { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); box-shadow:0 0 10px rgba(212,181,120,0.35); }
+
+    /* ========== PROBLEM ========== */
+    .problem {
+      background: var(--bg-warm);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    }
+    .problem-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:56px; }
+    .problem-card {
+      padding: 36px;
+      border: 1px solid var(--border-light);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.015);
+      transition: all 0.4s ease;
+      position: relative;
+    }
+    .problem-card::before {
+      content:'';
+      position:absolute; top:16px; left:0; width:3px; height:28px;
+      border-radius:0 2px 2px 0;
+      background:var(--rose); opacity:0.4;
+      transition: opacity 0.4s ease;
+    }
+    .problem-card:hover { border-color:rgba(240,234,220,0.2); background:rgba(255,255,255,0.03); }
+    .problem-card:hover::before { opacity:0.7; }
+    .problem-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:400; margin-bottom:10px; padding-left:4px; }
+    .problem-card p { font-size:0.86rem; color:var(--cream-muted); line-height:1.75; padding-left:4px; }
+
+    /* ========== PULL QUOTE (pattern breaker) ========== */
+    .pull-quote-section {
+      padding: 100px 32px;
+      text-align: center;
+      position: relative;
+    }
+    .pull-quote {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--cream);
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.45;
+      position: relative;
+    }
+    .pull-quote span { color: var(--gold); font-style: normal; }
+
+    /* ========== SOLUTION ========== */
+    .solution { text-align:center; }
+    .solution .sec-body { margin:0 auto 56px; text-align:center; }
+
+    .shift-visual { display:flex; align-items:stretch; justify-content:center; gap:0; flex-wrap:wrap; margin-bottom:20px; max-width:680px; margin-left:auto; margin-right:auto; }
+    .shift-box { padding:36px 40px; flex:1; min-width:220px; }
+    .shift-box.before {
+      background: rgba(224,136,136,0.04);
+      border: 1px solid rgba(224,136,136,0.1);
+      border-radius: 12px 0 0 12px;
+    }
+    .shift-box.after {
+      background: rgba(212,181,120,0.06);
+      border: 1px solid rgba(212,181,120,0.15);
+      border-radius: 0 12px 12px 0;
+    }
+    .shift-label { font-size:0.58rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:18px; }
+    .shift-box.before .shift-label { color:var(--rose); }
+    .shift-box.after .shift-label { color:var(--gold); }
+    .shift-box ul { list-style:none; text-align:left; }
+    .shift-box ul li { font-size:0.88rem; padding:5px 0; color:var(--cream-muted); }
+    .shift-box.before ul li { text-decoration:line-through; text-decoration-color:rgba(224,136,136,0.3); }
+    .shift-box.after ul li::before { content:'◆'; margin-right:10px; font-size:0.45em; color:var(--gold-dim); vertical-align:middle; }
+
+    /* ========== ARCHITECTURE ========== */
+    .architecture {
+      background: var(--bg-warm);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      overflow: hidden;
+    }
+    .architecture .wrap-narrow { text-align:center; }
+
+    .phases { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; margin-top:56px; text-align:left; }
+    .phase-card {
+      padding:32px 26px;
+      border-radius:12px;
+      border:1px solid var(--border-light);
+      position:relative; overflow:hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .phase-card:hover { transform:translateY(-4px); }
+    .phase-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+    .phase-card.stabilize { background:linear-gradient(180deg, rgba(212,181,120,0.06) 0%, var(--bg-card) 50%); }
+    .phase-card.stabilize::before { background:var(--gold); }
+    .phase-card.stabilize:hover { box-shadow: 0 12px 40px rgba(212,181,120,0.08); }
+    .phase-card.reconstruct { background:linear-gradient(180deg, rgba(127,194,248,0.05) 0%, var(--bg-card) 50%); }
+    .phase-card.reconstruct::before { background:var(--blue); }
+    .phase-card.reconstruct:hover { box-shadow: 0 12px 40px rgba(127,194,248,0.06); }
+    .phase-card.install { background:linear-gradient(180deg, rgba(126,216,154,0.05) 0%, var(--bg-card) 50%); }
+    .phase-card.install::before { background:var(--green); }
+    .phase-card.install:hover { box-shadow: 0 12px 40px rgba(126,216,154,0.06); }
+
+    .phase-label { font-size:0.56rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:8px; }
+    .phase-card.stabilize .phase-label { color:var(--gold); }
+    .phase-card.reconstruct .phase-label { color:var(--blue); }
+    .phase-card.install .phase-label { color:var(--green); }
+    .phase-title { font-family:'Cormorant Garamond',serif; font-size:1.55rem; font-weight:400; margin-bottom:14px; }
+    .phase-desc { font-size:0.82rem; color:var(--cream-muted); line-height:1.7; margin-bottom:20px; }
+    .phase-days { font-size:0.7rem; color:var(--cream-faint); padding-top:16px; border-top:1px solid var(--border); }
+    .phase-days span { display:block; padding:3px 0; }
+
+    /* ========== APP ========== */
+    .app-section { text-align:center; }
+    .app-section .sec-body { margin:0 auto 20px; text-align:center; }
+
+    .app-features {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 40px 0 56px;
+      flex-wrap: wrap;
+    }
+    .app-feat {
+      text-align: center;
+    }
+    .app-feat-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 12px;
+      font-size: 0.7rem; font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .app-feat-icon.gold { background:rgba(212,181,120,0.12); color:var(--gold); }
+    .app-feat-icon.blue { background:rgba(127,194,248,0.1); color:var(--blue); }
+    .app-feat-icon.green { background:rgba(126,216,154,0.1); color:var(--green); }
+    .app-feat-name { font-size:0.78rem; color:var(--cream-muted); }
+
+    .app-screenshots {
+      display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px;
+      max-width: 900px; margin: 0 auto;
+      align-items: center;
+    }
+    .app-screenshot {
+      aspect-ratio: 9/16;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      position:relative; overflow:hidden;
+      transition: transform 0.3s ease;
+    }
+    .app-screenshot img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      image-rendering: auto;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    /* ========== RHYTHM ========== */
+    .rhythm {
+      background: var(--bg-warm);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    }
+    .rhythm-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 56px;
+    }
+    .rhythm-card {
+      padding: 32px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.01);
+      transition: border-color 0.3s ease;
+    }
+    .rhythm-card:hover { border-color: var(--border-light); }
+    .rhythm-time {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.15rem; font-weight:400;
+      color:var(--gold); margin-bottom:10px;
+    }
+    .rhythm-card h3 {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.15rem; font-weight:400; margin-bottom:8px;
+    }
+    .rhythm-card p { font-size:0.82rem; color:var(--cream-muted); line-height:1.7; }
+
+    /* ========== PROOF ========== */
+    .proof { text-align:center; }
+    .proof-placeholder {
+      margin-top:48px; padding:64px 40px;
+      border:1px dashed var(--border-light);
+      border-radius:12px;
+      color:var(--cream-faint); font-size:0.84rem;
+      font-style:italic;
+    }
+
+    /* ========== PRICING ========== */
+    .pricing {
+      background: var(--bg-warm);
+      border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+      text-align:center;
+      position: relative;
+    }
+    .pricing::before {
+      content:''; position:absolute;
+      top:0; left:50%; transform:translateX(-50%);
+      width:600px; height:300px;
+      background: radial-gradient(ellipse, rgba(212,181,120,0.05) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .pricing-cards {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:20px; max-width:660px; margin:56px auto 0;
+      position: relative; z-index: 1;
+    }
+    .pricing-card {
+      padding:40px 30px; border-radius:12px;
+      border:1px solid var(--border-light);
+      background:var(--bg-card); text-align:left;
+      position:relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .pricing-card:hover { transform:translateY(-4px); }
+    .pricing-card.featured {
+      border-color: rgba(212,181,120,0.35);
+      background: linear-gradient(180deg, rgba(212,181,120,0.08) 0%, var(--bg-card) 40%);
+      box-shadow: 0 4px 48px rgba(212,181,120,0.08);
+    }
+    .pricing-card.featured:hover { box-shadow: 0 8px 56px rgba(212,181,120,0.12); }
+    .pricing-badge {
+      position:absolute; top:-11px; left:50%; transform:translateX(-50%);
+      padding:5px 18px;
+      background:var(--gold); color:var(--bg);
+      font-size:0.58rem; font-weight:500;
+      text-transform:uppercase; letter-spacing:0.15em;
+      border-radius:20px;
+      box-shadow: 0 2px 12px rgba(212,181,120,0.3);
+    }
+    .pricing-name { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.18em; color:var(--cream-faint); margin-bottom:14px; }
+    .pricing-price { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; margin-bottom:4px; line-height:1; }
+    .pricing-price span { font-size:0.95rem; color:var(--cream-muted); font-family:'DM Sans',sans-serif; font-weight:300; }
+    .pricing-period { font-size:0.76rem; color:var(--cream-faint); margin-bottom:28px; }
+    .pricing-features { list-style:none; margin-bottom:28px; }
+    .pricing-features li {
+      font-size:0.82rem; color:var(--cream-muted); padding:5px 0 5px 20px; position:relative;
+    }
+    .pricing-features li::before {
+      content:'◆'; position:absolute; left:0; font-size:0.38em; color:var(--gold-dim); top:12px;
+    }
+    .btn-pricing {
+      display:block; width:100%; padding:14px;
+      border-radius:8px; text-align:center;
+      font-size:0.84rem; font-weight:400; letter-spacing:0.04em;
+      cursor:pointer; transition:all 0.3s ease; text-decoration:none;
+    }
+    .btn-pricing.primary {
+      background:rgba(212,181,120,0.18); border:1px solid rgba(212,181,120,0.35);
+      color:var(--gold-bright);
+      box-shadow: 0 2px 16px rgba(212,181,120,0.08);
+    }
+    .btn-pricing.primary:hover { background:rgba(212,181,120,0.28); box-shadow: 0 4px 24px rgba(212,181,120,0.14); }
+    .btn-pricing.secondary { background:transparent; border:1px solid var(--border-light); color:var(--cream-muted); }
+    .btn-pricing.secondary:hover { border-color:rgba(240,234,220,0.22); color:var(--cream); }
+    .pricing-note { margin-top:20px; font-size:0.72rem; color:var(--cream-faint); position:relative; z-index:1; }
+
+    /* ========== EMAIL CAPTURE ========== */
+    .email-capture {
+      text-align: center;
+      padding: 80px 0;
+    }
+    .email-capture .sec-body { margin: 0 auto 32px; text-align: center; }
+    .email-form {
+      display: flex;
+      gap: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .email-form input[type="email"] {
+      flex: 1;
+      padding: 14px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .email-form input[type="email"]::placeholder { color: var(--cream-faint); }
+    .email-form input[type="email"]:focus { border-color: rgba(212,181,120,0.4); }
+    .email-form button {
+      padding: 14px 28px;
+      background: rgba(212,181,120,0.15);
+      border: 1px solid rgba(212,181,120,0.3);
+      color: var(--gold);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.84rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .email-form button:hover {
+      background: rgba(212,181,120,0.25);
+      border-color: rgba(212,181,120,0.45);
+    }
+    .email-note {
+      margin-top: 14px;
+      font-size: 0.68rem;
+      color: var(--cream-faint);
+    }
+    .email-success {
+      padding: 20px;
+      background: rgba(126,216,154,0.06);
+      border: 1px solid rgba(126,216,154,0.2);
+      border-radius: 10px;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .email-success p { color: var(--green); font-size: 0.9rem; }
+    .dn { display: none; }
+    @media (max-width:768px) {
+      .email-form { flex-direction: column; }
+      .email-form button { width: 100%; }
+    }
+
+    /* ========== FINAL CTA ========== */
+    .final-cta {
+      text-align:center; padding:140px 32px;
+      position:relative;
+    }
+    .final-cta::before {
+      content:''; position:absolute; inset:0;
+      background: radial-gradient(ellipse 50% 60% at 50% 60%, rgba(212,181,120,0.06), transparent 70%);
+      pointer-events:none;
+    }
+    .final-cta .sec-heading { margin-bottom:20px; }
+    .final-cta .sec-body { margin:0 auto 48px; text-align:center; }
+    .final-tagline {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.15rem; font-style:italic;
+      color:var(--cream-faint);
+      margin-top:52px;
+    }
+
+    /* ========== FOOTER ========== */
+    footer {
+      padding:48px 0;
+      border-top:1px solid var(--border);
+      text-align:center;
+    }
+    .footer-brand { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--cream-faint); margin-bottom:6px; }
+    .footer-sub { font-size:0.65rem; color:var(--cream-faint); opacity:0.4; }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width:768px) {
+      section { padding:80px 0; }
+      .problem-grid, .rhythm-grid { grid-template-columns:1fr; }
+      .phases { grid-template-columns:1fr; }
+      .app-screenshots { grid-template-columns:1fr; max-width:320px; margin-left:auto; margin-right:auto; }
+      .app-screenshots .app-screenshot:nth-child(2) { transform:none; }
+      .pricing-cards { grid-template-columns:1fr; max-width:360px; }
+      .shift-visual { flex-direction:column; }
+      .shift-box.before { border-radius:12px 12px 0 0; }
+      .shift-box.after { border-radius:0 0 12px 12px; }
+      .app-features { gap:24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="wrap">
+      <a href="#" class="nav-brand">Structured Achievement</a>
+      <a href="#pricing" class="nav-cta">Get Started</a>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-glow-secondary"></div>
+    <div class="hero-content">
+      <p class="hero-label">21-Day Personal Operating System</p>
+      <h1 class="serif">You don't need more<br>motivation. You need<br><em>infrastructure.</em></h1>
+      <p class="hero-sub">
+        A 21-day system that installs direction, discipline, and daily execution
+        into your life. Not advice you forget — a system you run.
+      </p>
+      <div class="hero-cta-wrap">
+        <a href="#pricing" class="btn-primary">Install Your System</a>
+        <p class="hero-price">Starting at <span>$9/month</span> for founding members</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+
+  <!-- ========== PROBLEM ========== -->
+  <section class="problem">
+    <div class="wrap">
+      <div class="anim">
+        <p class="sec-label">The real problem</p>
+        <h2 class="sec-heading serif">You've tried everything.<br>Nothing stayed.</h2>
+        <p class="sec-body">
+          The books. The apps. The morning routines. Every time — a burst of energy,
+          a week of progress, then silence. The problem was never you. It was the absence of a system.
+        </p>
+      </div>
+      <div class="problem-grid">
+        <div class="problem-card anim"><h3 class="serif">Stuck</h3><p>You know what to do. You can't bridge the gap between knowing and doing. It's not intelligence or effort — it's a missing execution layer.</p></div>
+        <div class="problem-card anim anim-d1"><h3 class="serif">Overwhelmed</h3><p>Too many priorities competing for too little focus. You're paralyzed by possibility, not limited by it. Nothing gets finished because everything is started.</p></div>
+        <div class="problem-card anim anim-d2"><h3 class="serif">Lost</h3><p>Ambition without direction. Your days are busy but incoherent — effort scatters because nothing organizes it into a system.</p></div>
+        <div class="problem-card anim anim-d3"><h3 class="serif">Frustrated</h3><p>Every failed system deepened the belief that you're the problem. Planners, apps, courses, coaches — each one worked for a week. You're not broken. They were.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PULL QUOTE ========== -->
+  <section class="pull-quote-section">
+    <div class="anim">
+      <div class="pull-quote">
+        "The gap between where you are and where you want to be<br>
+        isn't filled with motivation.<br>
+        It's filled with <span>infrastructure.</span>"
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SOLUTION ========== -->
+  <section class="solution">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">The shift</p>
+      <h2 class="sec-heading serif">Stop trying to stay motivated.<br>Install a system that runs without it.</h2>
+      <p class="sec-body">
+        Structured Achievement treats personal development like software installation.
+        You don't learn tips — you install components. One per day. After 21 days, the system is operational.
+      </p>
+    </div>
+    <div class="wrap anim">
+      <div class="shift-visual">
+        <div class="shift-box before">
+          <div class="shift-label">Before</div>
+          <ul>
+            <li>Scattered priorities</li>
+            <li>Motivation-dependent</li>
+            <li>Start-stop cycles</li>
+            <li>No tracking, no proof</li>
+          </ul>
+        </div>
+        <div class="shift-box after">
+          <div class="shift-label">After installation</div>
+          <ul>
+            <li>One clear direction</li>
+            <li>System-dependent</li>
+            <li>Compounding execution</li>
+            <li>Data-driven decisions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+
+  <!-- ========== ARCHITECTURE ========== -->
+  <section class="architecture">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">The 21-day architecture</p>
+      <h2 class="sec-heading serif">Three phases. One component per day.<br>Nothing skipped. Nothing optional.</h2>
+    </div>
+    <div class="wrap">
+      <div class="phases">
+        <div class="phase-card stabilize anim">
+          <p class="phase-label">Phase I · Days 1–7</p>
+          <h3 class="phase-title serif">Stabilize</h3>
+          <p class="phase-desc">Build the foundation. Direction, structure, discipline, priorities, tracking, environment.</p>
+          <div class="phase-days">
+            <span>Day 1 — Operating Direction</span>
+            <span>Day 2 — Daily Structure</span>
+            <span>Day 3 — Core Discipline</span>
+            <span>Day 4 — Priority Hierarchy</span>
+            <span>Day 5 — Tracking System</span>
+            <span>Day 6 — Environment</span>
+            <span>Day 7 — Phase Review</span>
+          </div>
+        </div>
+        <div class="phase-card reconstruct anim anim-d1">
+          <p class="phase-label">Phase II · Days 8–14</p>
+          <h3 class="phase-title serif">Reconstruct</h3>
+          <p class="phase-desc">Rebuild how you think and plan. Mental frameworks, energy, decisions, strategic patience.</p>
+          <div class="phase-days">
+            <span>Day 8 — Internal Narrative</span>
+            <span>Day 9 — Feedback Loop</span>
+            <span>Day 10 — Decision Protocols</span>
+            <span>Day 11 — Energy Management</span>
+            <span>Day 12 — Weekly Rhythm</span>
+            <span>Day 13 — Strategic Patience</span>
+            <span>Day 14 — Phase Review</span>
+          </div>
+        </div>
+        <div class="phase-card install anim anim-d2">
+          <p class="phase-label">Phase III · Days 15–21</p>
+          <h3 class="phase-title serif">Install</h3>
+          <p class="phase-desc">Lock in the system. Identity alignment, resilience, growth cycles, full activation.</p>
+          <div class="phase-days">
+            <span>Day 15 — Identity Alignment</span>
+            <span>Day 16 — Resilience Protocol</span>
+            <span>Day 17 — Support Architecture</span>
+            <span>Day 18 — Growth Cycles</span>
+            <span>Day 19 — Emotional OS</span>
+            <span>Day 20 — Integrate & Compound</span>
+            <span>Day 21 — System Activation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== APP ========== -->
+  <section class="app-section">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">The execution tool</p>
+      <h2 class="sec-heading serif">Not another app you'll abandon.<br>The one that runs your system.</h2>
+      <p class="sec-body">
+        Purpose-built for the 21-day installation and the operational life that follows.
+        Track non-negotiables, habits, and tasks. See your data. Review. Recalibrate. Execute.
+      </p>
+    </div>
+    <div class="wrap anim">
+      <div class="app-features">
+        <div class="app-feat"><div class="app-feat-icon gold">◆</div><div class="app-feat-name">Daily tracking</div></div>
+        <div class="app-feat"><div class="app-feat-icon gold">◆</div><div class="app-feat-name">Weekly reviews</div></div>
+        <div class="app-feat"><div class="app-feat-icon blue">◆</div><div class="app-feat-name">Monthly reports</div></div>
+        <div class="app-feat"><div class="app-feat-icon green">◆</div><div class="app-feat-name">Quarterly recalibration</div></div>
+      </div>
+      <div class="app-screenshots">
+        <div class="app-screenshot">
+          <img src="screen-today.jpg" alt="Today tab showing direction, non-negotiables and habits" />
+        </div>
+        <div class="app-screenshot">
+          <img src="screen-install.jpg" alt="Installation tab showing 21-day course structure" />
+        </div>
+        <div class="app-screenshot">
+          <img src="screen-achieve.jpg" alt="Achievements tab showing monthly system reports" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+
+  <!-- ========== RHYTHM ========== -->
+  <section class="rhythm">
+    <div class="wrap">
+      <div class="anim">
+        <p class="sec-label">After installation</p>
+        <h2 class="sec-heading serif">Two minutes a day.<br>That's what it takes to run your system.</h2>
+        <p class="sec-body">Open the app. Execute. Close it. No hour-long planning. No complex reviews. Just structured, daily operation.</p>
+      </div>
+      <div class="rhythm-grid">
+        <div class="rhythm-card anim">
+          <div class="rhythm-time">Morning</div>
+          <h3 class="serif">See what today requires</h3>
+          <p>Non-negotiables, habits, and tasks are waiting. No deciding. Just executing.</p>
+        </div>
+        <div class="rhythm-card anim anim-d1">
+          <div class="rhythm-time">Throughout the day</div>
+          <h3 class="serif">Check off as you go</h3>
+          <p>Each completion feeds your weekly snapshots, monthly reports, and quarterly data.</p>
+        </div>
+        <div class="rhythm-card anim anim-d2">
+          <div class="rhythm-time">Evening</div>
+          <h3 class="serif">Plan tomorrow in 60 seconds</h3>
+          <p>Add tasks. Review anything incomplete. Close the app. Done.</p>
+        </div>
+        <div class="rhythm-card anim anim-d3">
+          <div class="rhythm-time">Sunday</div>
+          <h3 class="serif">10-minute weekly review</h3>
+          <p>What worked. Where you drifted. One adjustment. Evidence-based, structured, fast.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== EMAIL CAPTURE ========== -->
+  <section class="email-capture">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">Not ready to commit?</p>
+      <h2 class="sec-heading serif">Get the framework first.</h2>
+      <p class="sec-body">
+        We'll send you the core principles behind the 21-day installation — free.
+        No spam. Just the system.
+      </p>
+      <div id="email-form-wrap">
+        <form name="sa-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
+          <p class="dn"><label>Don't fill this out: <input name="bot-field" /></label></p>
+          <div class="email-form">
+            <input type="email" name="email" placeholder="Your email" required />
+            <button type="submit">Send it</button>
+          </div>
+        </form>
+        <p class="email-note">No spam. Unsubscribe anytime.</p>
+      </div>
+      <div id="email-success" class="email-success" style="display:none;">
+        <p>Check your inbox. The framework is on its way.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+
+  <!-- ========== PRICING ========== -->
+  <section class="pricing" id="pricing">
+    <div class="wrap-narrow anim">
+      <p class="sec-label">Pricing</p>
+      <h2 class="sec-heading serif">Less than a coffee a day.<br>For a system that runs your life.</h2>
+    </div>
+    <div class="wrap">
+      <div class="pricing-cards">
+        <div class="pricing-card featured anim">
+          <div class="pricing-badge">Limited — 50 spots</div>
+          <p class="pricing-name">Founding Member</p>
+          <div class="pricing-price text-gold">$9<span>/month</span></div>
+          <p class="pricing-period">Locked in forever. First 50 only.</p>
+          <ul class="pricing-features">
+            <li>Full 21-day installation course</li>
+            <li>Purpose-built tracker app</li>
+            <li>Structured journal for all 21 days</li>
+            <li>Weekly reviews + quarterly recalibrations</li>
+            <li>Monthly System Reports</li>
+            <li>Post-installation System Patches</li>
+          </ul>
+          <a href="https://whop.com/checkout/plan_bUdrxoiB0MPhW" class="btn-pricing primary">Claim Founding Spot</a>
+        </div>
+        <div class="pricing-card anim anim-d1">
+          <p class="pricing-name">Standard</p>
+          <div class="pricing-price">$19<span>/month</span></div>
+          <p class="pricing-period">Full access. Cancel anytime.</p>
+          <ul class="pricing-features">
+            <li>Full 21-day installation course</li>
+            <li>Purpose-built tracker app</li>
+            <li>Structured journal for all 21 days</li>
+            <li>Weekly reviews + quarterly recalibrations</li>
+            <li>Monthly System Reports</li>
+            <li>Post-installation System Patches</li>
+          </ul>
+          <a href="https://whop.com/checkout/plan_2XmKrYfV9RrsB" class="btn-pricing secondary">Get Started</a>
+        </div>
+      </div>
+      <p class="pricing-note anim">Cancel anytime. No contracts. No hidden fees.</p>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="final-cta">
+    <div class="wrap-narrow anim">
+      <h2 class="sec-heading serif">You've read enough.<br>You've planned enough.<br><span class="text-gold">Now install.</span></h2>
+      <p class="sec-body">
+        21 days from now, you either have a system that runs
+        or another month of the same pattern.
+        The information isn't what's missing. The infrastructure is.
+      </p>
+      <a href="#pricing" class="btn-primary" style="margin-top:8px;">Install Your System</a>
+      <p class="final-tagline">"The system runs. You maintain it."</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <p class="footer-brand serif">Structured Achievement</p>
+      <p class="footer-sub">© 2026 Structured Achievement. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const nav=document.getElementById('nav');
+    window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',window.scrollY>60));
+    const obs=new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);} });
+    },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+    document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
+
+    // Email form — submit without redirect
+    const form = document.getElementById('lead-form');
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        try {
+          await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(data).toString()
+          });
+          document.getElementById('email-form-wrap').style.display = 'none';
+          document.getElementById('email-success').style.display = 'block';
+        } catch (err) {
+          form.submit();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
