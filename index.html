@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Structured Achievement — Install Your Personal Operating System</title>
+  <title>Lock-In System — Install Your Personal Operating System</title>
   <meta name="description" content="A 21-day system that installs discipline, structure, and execution into your daily life. Not motivation. Infrastructure.">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,10 +25,11 @@
       --cream: #F0EADC;
       --cream-muted: #C8C0B2;
       --cream-faint: #8A8278;
-      --gold: #D4B578;
-      --gold-bright: #E0C78E;
-      --gold-dim: #B09460;
+      --gold: #5A98FF;
+      --gold-bright: #7BB3FF;
+      --gold-dim: #4080E0;
       --blue: #7FC2F8;
+      --purple: #9B7BF5;
       --green: #7ED89A;
       --rose: #E08888;
       --border: rgba(240, 234, 220, 0.08);
@@ -85,14 +86,14 @@
     .nav-brand { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:500; color:var(--cream); letter-spacing:0.02em; text-decoration:none; }
     .nav-cta {
       padding: 10px 28px;
-      background: rgba(212,181,120,0.12);
-      border: 1px solid rgba(212,181,120,0.28);
+      background: rgba(90,152,255,0.12);
+      border: 1px solid rgba(90,152,255,0.28);
       color: var(--gold);
       font-size: 0.8rem; font-weight:400; letter-spacing:0.05em;
       border-radius: 6px; cursor:pointer;
       transition: all 0.3s ease; text-decoration:none;
     }
-    .nav-cta:hover { background: rgba(212,181,120,0.22); border-color: rgba(212,181,120,0.4); }
+    .nav-cta:hover { background: rgba(90,152,255,0.22); border-color: rgba(90,152,255,0.4); }
 
     /* ========== HERO ========== */
     .hero {
@@ -103,12 +104,12 @@
       padding: 100px 32px 80px;
       overflow: hidden;
     }
-    /* Atmospheric gold light */
+    /* Atmospheric blue light */
     .hero-glow {
       position: absolute;
       top: -20%; left: 50%; transform: translateX(-50%);
       width: 900px; height: 700px;
-      background: radial-gradient(ellipse, rgba(212,181,120,0.1) 0%, rgba(212,181,120,0.03) 40%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(90,152,255,0.1) 0%, rgba(90,152,255,0.03) 40%, transparent 70%);
       pointer-events: none;
       animation: heroGlow 6s ease-in-out infinite;
     }
@@ -161,21 +162,21 @@
     .hero-cta-wrap { animation: fadeUp 1s ease 0.9s both; }
     .btn-primary {
       display: inline-block; padding: 18px 56px;
-      background: linear-gradient(135deg, rgba(212,181,120,0.22), rgba(212,181,120,0.1));
-      border: 1px solid rgba(212,181,120,0.4);
+      background: linear-gradient(135deg, rgba(90,152,255,0.22), rgba(90,152,255,0.1));
+      border: 1px solid rgba(90,152,255,0.4);
       color: var(--gold-bright);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.94rem; font-weight: 400;
       letter-spacing: 0.07em; border-radius: 8px;
       cursor: pointer; transition: all 0.4s ease;
       text-decoration: none;
-      box-shadow: 0 4px 32px rgba(212,181,120,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
+      box-shadow: 0 4px 32px rgba(90,152,255,0.1), inset 0 1px 0 rgba(255,255,255,0.04);
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, rgba(212,181,120,0.32), rgba(212,181,120,0.18));
-      border-color: rgba(212,181,120,0.55);
+      background: linear-gradient(135deg, rgba(90,152,255,0.32), rgba(90,152,255,0.18));
+      border-color: rgba(90,152,255,0.55);
       transform: translateY(-2px);
-      box-shadow: 0 8px 48px rgba(212,181,120,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+      box-shadow: 0 8px 48px rgba(90,152,255,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
     }
     .hero-price { font-size:0.78rem; color:var(--cream-faint); margin-top:18px; }
     .hero-price span { color:var(--cream-muted); font-weight:400; }
@@ -200,8 +201,8 @@
 
     /* ========== DIVIDER ========== */
     .divider { display:flex; align-items:center; justify-content:center; gap:18px; padding:0 32px; }
-    .div-line { height:1px; width:70px; background:linear-gradient(90deg,transparent,rgba(138,130,120,0.5),transparent); }
-    .div-diamond { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); box-shadow:0 0 10px rgba(212,181,120,0.35); }
+    .div-line { height:1px; width:70px; background:linear-gradient(90deg,transparent,rgba(90,152,255,0.5),transparent); }
+    .div-diamond { width:5px; height:5px; background:var(--gold); transform:rotate(45deg); box-shadow:0 0 10px rgba(90,152,255,0.35); }
 
     /* ========== PROBLEM ========== */
     .problem {
@@ -260,8 +261,8 @@
       border-radius: 12px 0 0 12px;
     }
     .shift-box.after {
-      background: rgba(212,181,120,0.06);
-      border: 1px solid rgba(212,181,120,0.15);
+      background: rgba(90,152,255,0.06);
+      border: 1px solid rgba(90,152,255,0.15);
       border-radius: 0 12px 12px 0;
     }
     .shift-label { font-size:0.58rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:18px; }
@@ -290,19 +291,19 @@
     }
     .phase-card:hover { transform:translateY(-4px); }
     .phase-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
-    .phase-card.stabilize { background:linear-gradient(180deg, rgba(212,181,120,0.06) 0%, var(--bg-card) 50%); }
+    .phase-card.stabilize { background:linear-gradient(180deg, rgba(90,152,255,0.06) 0%, var(--bg-card) 50%); }
     .phase-card.stabilize::before { background:var(--gold); }
-    .phase-card.stabilize:hover { box-shadow: 0 12px 40px rgba(212,181,120,0.08); }
-    .phase-card.reconstruct { background:linear-gradient(180deg, rgba(127,194,248,0.05) 0%, var(--bg-card) 50%); }
-    .phase-card.reconstruct::before { background:var(--blue); }
-    .phase-card.reconstruct:hover { box-shadow: 0 12px 40px rgba(127,194,248,0.06); }
+    .phase-card.stabilize:hover { box-shadow: 0 12px 40px rgba(90,152,255,0.08); }
+    .phase-card.reconstruct { background:linear-gradient(180deg, rgba(155,123,245,0.05) 0%, var(--bg-card) 50%); }
+    .phase-card.reconstruct::before { background:var(--purple); }
+    .phase-card.reconstruct:hover { box-shadow: 0 12px 40px rgba(155,123,245,0.06); }
     .phase-card.install { background:linear-gradient(180deg, rgba(126,216,154,0.05) 0%, var(--bg-card) 50%); }
     .phase-card.install::before { background:var(--green); }
     .phase-card.install:hover { box-shadow: 0 12px 40px rgba(126,216,154,0.06); }
 
     .phase-label { font-size:0.56rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:8px; }
     .phase-card.stabilize .phase-label { color:var(--gold); }
-    .phase-card.reconstruct .phase-label { color:var(--blue); }
+    .phase-card.reconstruct .phase-label { color:var(--purple); }
     .phase-card.install .phase-label { color:var(--green); }
     .phase-title { font-family:'Cormorant Garamond',serif; font-size:1.55rem; font-weight:400; margin-bottom:14px; }
     .phase-desc { font-size:0.82rem; color:var(--cream-muted); line-height:1.7; margin-bottom:20px; }
@@ -331,7 +332,7 @@
       font-size: 0.7rem; font-weight: 500;
       letter-spacing: 0.05em;
     }
-    .app-feat-icon.gold { background:rgba(212,181,120,0.12); color:var(--gold); }
+    .app-feat-icon.gold { background:rgba(90,152,255,0.12); color:var(--gold); }
     .app-feat-icon.blue { background:rgba(127,194,248,0.1); color:var(--blue); }
     .app-feat-icon.green { background:rgba(126,216,154,0.1); color:var(--green); }
     .app-feat-name { font-size:0.78rem; color:var(--cream-muted); }
@@ -412,7 +413,7 @@
       content:''; position:absolute;
       top:0; left:50%; transform:translateX(-50%);
       width:600px; height:300px;
-      background: radial-gradient(ellipse, rgba(212,181,120,0.05) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(90,152,255,0.05) 0%, transparent 70%);
       pointer-events:none;
     }
     .pricing-cards {
@@ -429,11 +430,11 @@
     }
     .pricing-card:hover { transform:translateY(-4px); }
     .pricing-card.featured {
-      border-color: rgba(212,181,120,0.35);
-      background: linear-gradient(180deg, rgba(212,181,120,0.08) 0%, var(--bg-card) 40%);
-      box-shadow: 0 4px 48px rgba(212,181,120,0.08);
+      border-color: rgba(90,152,255,0.35);
+      background: linear-gradient(180deg, rgba(90,152,255,0.08) 0%, var(--bg-card) 40%);
+      box-shadow: 0 4px 48px rgba(90,152,255,0.08);
     }
-    .pricing-card.featured:hover { box-shadow: 0 8px 56px rgba(212,181,120,0.12); }
+    .pricing-card.featured:hover { box-shadow: 0 8px 56px rgba(90,152,255,0.12); }
     .pricing-badge {
       position:absolute; top:-11px; left:50%; transform:translateX(-50%);
       padding:5px 18px;
@@ -441,7 +442,7 @@
       font-size:0.58rem; font-weight:500;
       text-transform:uppercase; letter-spacing:0.15em;
       border-radius:20px;
-      box-shadow: 0 2px 12px rgba(212,181,120,0.3);
+      box-shadow: 0 2px 12px rgba(90,152,255,0.3);
     }
     .pricing-name { font-size:0.62rem; text-transform:uppercase; letter-spacing:0.18em; color:var(--cream-faint); margin-bottom:14px; }
     .pricing-price { font-family:'Cormorant Garamond',serif; font-size:3rem; font-weight:300; margin-bottom:4px; line-height:1; }
@@ -461,11 +462,11 @@
       cursor:pointer; transition:all 0.3s ease; text-decoration:none;
     }
     .btn-pricing.primary {
-      background:rgba(212,181,120,0.18); border:1px solid rgba(212,181,120,0.35);
+      background:rgba(90,152,255,0.18); border:1px solid rgba(90,152,255,0.35);
       color:var(--gold-bright);
-      box-shadow: 0 2px 16px rgba(212,181,120,0.08);
+      box-shadow: 0 2px 16px rgba(90,152,255,0.08);
     }
-    .btn-pricing.primary:hover { background:rgba(212,181,120,0.28); box-shadow: 0 4px 24px rgba(212,181,120,0.14); }
+    .btn-pricing.primary:hover { background:rgba(90,152,255,0.28); box-shadow: 0 4px 24px rgba(90,152,255,0.14); }
     .btn-pricing.secondary { background:transparent; border:1px solid var(--border-light); color:var(--cream-muted); }
     .btn-pricing.secondary:hover { border-color:rgba(240,234,220,0.22); color:var(--cream); }
     .pricing-note { margin-top:20px; font-size:0.72rem; color:var(--cream-faint); position:relative; z-index:1; }
@@ -495,11 +496,11 @@
       transition: border-color 0.3s ease;
     }
     .email-form input[type="email"]::placeholder { color: var(--cream-faint); }
-    .email-form input[type="email"]:focus { border-color: rgba(212,181,120,0.4); }
+    .email-form input[type="email"]:focus { border-color: rgba(90,152,255,0.4); }
     .email-form button {
       padding: 14px 28px;
-      background: rgba(212,181,120,0.15);
-      border: 1px solid rgba(212,181,120,0.3);
+      background: rgba(90,152,255,0.15);
+      border: 1px solid rgba(90,152,255,0.3);
       color: var(--gold);
       font-family: 'DM Sans', sans-serif;
       font-size: 0.84rem;
@@ -511,8 +512,8 @@
       white-space: nowrap;
     }
     .email-form button:hover {
-      background: rgba(212,181,120,0.25);
-      border-color: rgba(212,181,120,0.45);
+      background: rgba(90,152,255,0.25);
+      border-color: rgba(90,152,255,0.45);
     }
     .email-note {
       margin-top: 14px;
@@ -541,7 +542,7 @@
     }
     .final-cta::before {
       content:''; position:absolute; inset:0;
-      background: radial-gradient(ellipse 50% 60% at 50% 60%, rgba(212,181,120,0.06), transparent 70%);
+      background: radial-gradient(ellipse 50% 60% at 50% 60%, rgba(90,152,255,0.06), transparent 70%);
       pointer-events:none;
     }
     .final-cta .sec-heading { margin-bottom:20px; }
@@ -589,7 +590,7 @@
   <!-- NAV -->
   <nav id="nav">
     <div class="wrap">
-      <a href="#" class="nav-brand">Structured Achievement</a>
+      <a href="#" class="nav-brand">Lock-In System</a>
       <a href="#pricing" class="nav-cta">Get Started</a>
     </div>
   </nav>
@@ -651,7 +652,7 @@
       <p class="sec-label">The shift</p>
       <h2 class="sec-heading serif">Stop trying to stay motivated.<br>Install a system that runs without it.</h2>
       <p class="sec-body">
-        Structured Achievement treats personal development like software installation.
+        Lock-In System treats personal development like software installation.
         You don't learn tips — you install components. One per day. After 21 days, the system is operational.
       </p>
     </div>
@@ -811,7 +812,7 @@
         No spam. Just the system.
       </p>
       <div id="email-form-wrap">
-        <form name="sa-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
+        <form name="lis-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
           <p class="dn"><label>Don't fill this out: <input name="bot-field" /></label></p>
           <div class="email-form">
             <input type="email" name="email" placeholder="Your email" required />
@@ -849,7 +850,8 @@
             <li>Monthly System Reports</li>
             <li>Post-installation System Patches</li>
           </ul>
-          <a href="https://whop.com/checkout/plan_bUdrxoiB0MPhW" class="btn-pricing primary">Claim Founding Spot</a>
+          <a href="#" class="btn-pricing primary" onclick="alert('Whop store not yet configured'); return false;">Claim Founding Spot</a>
+          <!-- TODO: Replace href with Lock-In System Whop checkout URL -->
         </div>
         <div class="pricing-card anim anim-d1">
           <p class="pricing-name">Standard</p>
@@ -863,7 +865,8 @@
             <li>Monthly System Reports</li>
             <li>Post-installation System Patches</li>
           </ul>
-          <a href="https://whop.com/checkout/plan_2XmKrYfV9RrsB" class="btn-pricing secondary">Get Started</a>
+          <a href="#" class="btn-pricing secondary" onclick="alert('Whop store not yet configured'); return false;">Get Started</a>
+          <!-- TODO: Replace href with Lock-In System Whop checkout URL -->
         </div>
       </div>
       <p class="pricing-note anim">Cancel anytime. No contracts. No hidden fees.</p>
@@ -887,8 +890,8 @@
   <!-- FOOTER -->
   <footer>
     <div class="wrap">
-      <p class="footer-brand serif">Structured Achievement</p>
-      <p class="footer-sub">© 2026 Structured Achievement. All rights reserved.</p>
+      <p class="footer-brand serif">Lock-In System</p>
+      <p class="footer-sub">© 2026 Lock-In System. All rights reserved.</p>
     </div>
   </footer>
 
