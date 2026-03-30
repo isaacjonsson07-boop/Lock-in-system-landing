@@ -800,32 +800,6 @@
     </div>
   </section>
 
-  <!-- ========== EMAIL CAPTURE ========== -->
-  <section class="email-capture">
-    <div class="wrap-narrow anim">
-      <p class="sec-label">Not ready yet?</p>
-      <h2 class="sec-heading serif">Get the framework first.</h2>
-      <p class="sec-body">
-        We will send you the core principles behind the 21-day system for free.
-        No spam. Just the system.
-      </p>
-      <div id="email-form-wrap">
-        <form name="lis-leads" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="lead-form">
-          <input type="hidden" name="form-name" value="lis-leads" />
-          <p class="dn"><label>Don't fill this out: <input name="bot-field" /></label></p>
-          <div class="email-form">
-            <input type="email" name="email" placeholder="Your email" required />
-            <button type="submit">Send it</button>
-          </div>
-        </form>
-        <p class="email-note">No spam. Unsubscribe anytime.</p>
-      </div>
-      <div id="email-success" class="email-success" style="display:none;">
-        <p>Check your inbox. The framework is on its way.</p>
-      </div>
-    </div>
-  </section>
-
   <div class="divider"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
 
   <!-- ========== PRICING ========== -->
@@ -900,25 +874,6 @@
     },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
     document.querySelectorAll('.anim').forEach(el=>obs.observe(el));
 
-    // Email form — submit without redirect
-    const form = document.getElementById('lead-form');
-    if (form) {
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const data = new FormData(form);
-        try {
-          await fetch('/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(data).toString()
-          });
-          document.getElementById('email-form-wrap').style.display = 'none';
-          document.getElementById('email-success').style.display = 'block';
-        } catch (err) {
-          form.submit();
-        }
-      });
-    }
   </script>
 </body>
 </html>
