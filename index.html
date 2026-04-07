@@ -564,23 +564,96 @@
 
     /* ========== RESPONSIVE ========== */
     @media (max-width:768px) {
-      section { padding:80px 0; }
+      section { padding:40px 0; }
+      footer { padding-bottom: 110px; } /* Clear the sticky mobile CTA */
       nav .wrap { padding: 0 16px; }
       .nav-brand { font-size: 0.95rem; }
       .nav-cta { padding: 8px 18px; font-size: 0.75rem; }
       .wrap { padding: 0 20px; }
       .wrap-narrow { padding: 0 20px; }
-      .hero { padding: 100px 20px 80px; }
-      .final-cta { padding: 100px 20px; }
-      .problem-grid, .rhythm-grid { grid-template-columns:1fr; }
-      .phases { grid-template-columns:1fr; }
-      .app-screenshots { grid-template-columns:1fr; max-width:320px; margin-left:auto; margin-right:auto; }
+      .hero { padding: 80px 20px 44px; min-height: auto; }
+      .hero img { max-width: 280px !important; margin-bottom: 24px !important; }
+      .hero h1 { font-size: 2.3rem; margin-bottom: 20px; line-height: 1.12; }
+      .hero h1 br { display: none; }
+      .hero-sub { font-size: 0.98rem; margin-bottom: 28px; line-height: 1.65; }
+      .btn-primary { padding: 16px 40px; font-size: 0.9rem; }
+      .final-cta { padding: 56px 20px 110px; }
+      .final-cta .sec-heading br { display: none; }
+      .sec-heading { margin-bottom: 18px; font-size: 2rem; line-height: 1.15; }
+      .sec-heading br { display: none; }
+      .sec-body { font-size: 0.95rem; line-height: 1.7; }
+      .problem-grid { grid-template-columns:1fr; gap:14px; margin-top:32px; }
+      .problem-card { padding: 24px; }
+      .problem-card p { font-size: 0.84rem; line-height: 1.65; }
+      .phases { grid-template-columns:1fr; gap:14px; }
+      .phase-card { padding: 28px; }
+      .phase-days { display: none; } /* Hide 21-day list on mobile */
+      .app-screenshots {
+        display: flex;
+        grid-template-columns: none;
+        max-width: 100%;
+        gap: 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 8px 20px 16px;
+        margin: 0 -20px;
+        scrollbar-width: none;
+      }
+      .app-screenshots::-webkit-scrollbar { display: none; }
+      .app-screenshot {
+        flex: 0 0 240px;
+        scroll-snap-align: center;
+      }
       .app-screenshots .app-screenshot:nth-child(2) { transform:none; }
-      .pricing-cards { grid-template-columns:1fr; max-width:360px; }
+      .pricing-cards { grid-template-columns:1fr; max-width:360px; gap:16px; }
       .shift-visual { flex-direction:column; }
+      .shift-box { padding: 28px 32px; }
       .shift-box.before { border-radius:12px 12px 0 0; }
       .shift-box.after { border-radius:0 0 12px 12px; }
-      .app-features { gap:24px; }
+      .app-features { gap:20px; }
+
+      /* Hide redundant sections on mobile to cut scroll length */
+      .pull-quote-section { display: none; }
+      .rhythm { display: none; }
+      .email-capture { display: none; }
+
+      /* Hide dividers that immediately precede hidden mobile sections */
+      .divider:has(+ .rhythm),
+      .divider:has(+ .email-capture),
+      .divider:has(+ .pull-quote-section) { display: none; }
+
+      /* Tighten dividers on mobile */
+      .divider { padding: 8px 32px; }
+
+      /* Sticky mobile CTA */
+      .mobile-sticky-cta {
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: rgba(15,15,18,0.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border-light);
+        padding: 14px 20px;
+        z-index: 99;
+        display: block;
+      }
+      .mobile-sticky-cta a {
+        display: block;
+        width: 100%;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, rgba(90,152,255,0.28), rgba(90,152,255,0.14));
+        border: 1px solid rgba(90,152,255,0.5);
+        color: var(--blue);
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.95rem; font-weight: 500;
+        letter-spacing: 0.05em; border-radius: 8px;
+        text-decoration: none;
+        text-align: center;
+      }
+    }
+    @media (min-width:769px) {
+      .mobile-sticky-cta { display: none; }
     }
   </style>
 </head>
@@ -865,6 +938,11 @@
       <p class="footer-sub">© 2026 Lock-In System. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- Sticky Mobile CTA -->
+  <div class="mobile-sticky-cta">
+    <a href="#pricing">Lock In Now — $9/mo</a>
+  </div>
 
   <script>
     const nav=document.getElementById('nav');
